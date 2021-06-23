@@ -1,6 +1,8 @@
 package xyz.przemyk.lwjglgame.game;
 
+import org.joml.Vector2f;
 import xyz.przemyk.lwjglgame.engine.IGameLogic;
+import xyz.przemyk.lwjglgame.engine.MouseInput;
 import xyz.przemyk.lwjglgame.engine.Window;
 import xyz.przemyk.lwjglgame.engine.graph.Mesh;
 
@@ -46,10 +48,10 @@ public class DummyGame implements IGameLogic {
     }
 
     @Override
-    public void input(Window window) {
-        if ( window.isKeyPressed(GLFW_KEY_UP) ) {
+    public void input(Window window, MouseInput mouseInput) {
+        if (window.isKeyPressed(GLFW_KEY_UP)) {
             direction = 1;
-        } else if ( window.isKeyPressed(GLFW_KEY_DOWN) ) {
+        } else if (window.isKeyPressed(GLFW_KEY_DOWN)) {
             direction = -1;
         } else {
             direction = 0;
@@ -62,10 +64,32 @@ public class DummyGame implements IGameLogic {
         } else {
             camera.moveForward = 0;
         }
+
+        if (window.isKeyPressed(GLFW_KEY_D)) {
+            camera.moveRight = 1;
+        } else if (window.isKeyPressed(GLFW_KEY_A)) {
+            camera.moveRight = -1;
+        } else {
+            camera.moveRight = 0;
+        }
+
+        if (window.isKeyPressed(GLFW_KEY_SPACE)) {
+            camera.moveUp = 1;
+        } else if (window.isKeyPressed(GLFW_KEY_LEFT_CONTROL)) {
+            camera.moveUp = -1;
+        } else {
+            camera.moveUp = 0;
+        }
+
+        if (mouseInput.isRightButtonPressed()) {
+            Vector2f rotation = mouseInput.getDisplVec();
+            camera.angleXDegrees += rotation.x;
+            camera.angleYDegrees += rotation.y;
+        }
     }
 
     @Override
-    public void update(float interval) {
+    public void update(float interval, MouseInput mouseInput) {
         color += direction * 0.01f;
         if (color > 1) {
             color = 1.0f;

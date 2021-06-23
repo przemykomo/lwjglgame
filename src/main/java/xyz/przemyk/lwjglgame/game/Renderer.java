@@ -44,9 +44,10 @@ public class Renderer {
         }
 
         shaderProgram.bind();
-        Matrix4f matrix4f = new Matrix4f().translate(-camera.position.x, -camera.position.y, -camera.position.z);
-        projectionMatrix.mul(matrix4f, matrix4f);
-        shaderProgram.setUniform("cameraMatrix", matrix4f);
+        Matrix4f cameraMatrix = new Matrix4f().rotateXYZ((float) Math.toRadians(camera.angleXDegrees), (float) Math.toRadians(camera.angleYDegrees), 0)
+                .translate(-camera.position.x, -camera.position.y, -camera.position.z);
+        projectionMatrix.mul(cameraMatrix, cameraMatrix);
+        shaderProgram.setUniform("cameraMatrix", cameraMatrix);
 
         glBindVertexArray(mesh.getVaoId());
         glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
