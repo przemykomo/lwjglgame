@@ -2,9 +2,7 @@ package xyz.przemyk.lwjglgame.engine;
 
 public class GameEngine implements Runnable {
 
-    public static final int TARGET_FPS = 60;
-
-    public static final int TARGET_UPS = 30;
+    public static final int TARGET_TPS = 30;
 
     private final Window window;
 
@@ -14,11 +12,11 @@ public class GameEngine implements Runnable {
 
     private final MouseInput mouseInput;
 
-    public GameEngine(String windowTitle, int width, int height, boolean vSync, IGameLogic gameLogic) throws Exception {
-        window = new Window(windowTitle, width, height, vSync);
+    public GameEngine(String windowTitle, int width, int height, IGameLogic gameLogic) {
+        this.window = new Window(windowTitle, width, height);
         this.gameLogic = gameLogic;
-        timer = new Timer();
-        mouseInput = new MouseInput();
+        this.timer = new Timer();
+        this.mouseInput = new MouseInput();
     }
 
     @Override
@@ -43,36 +41,41 @@ public class GameEngine implements Runnable {
     protected void gameLoop() {
         float elapsedTime;
         float accumulator = 0f;
-        float interval = 1f / TARGET_UPS;
+        float interval = 1f / TARGET_TPS;
 
-        boolean running = true;
-        while (running && !window.windowShouldClose()) {
-            elapsedTime = timer.getElapsedTime();
-            accumulator += elapsedTime;
+        double deltaTime = 1.0 / 60.0;
+        double timeBegin = System.nanoTime() / 1_000_000_000.0;
+
+        double lastTickTime = -1.0;
+        final double expectedTickTime = 1.0 / TARGET_TPS;
+
+        while (!window.windowShouldClose()) {
+//            elapsedTime = timer.getElapsedTime();
+//            accumulator += elapsedTime;
 
             input();
 
-            while (accumulator >= interval) {
-                update(interval);
-                accumulator -= interval;
-            }
+//            while (accumulator >= interval) {
+//                update(interval);
+//                accumulator -= interval;
+//            }
 
-            render();
-
-            if (!window.isvSync()) {
-                sync();
+            // ---- TICK ----
+            double timeNow = System.nanoTime() / 1_000_000_000.0;
+            if (timeNow >= lastTickTime + expectedTickTime) {
+                lastTickTime = timeNow;
+                update();
             }
-        }
-    }
+            // ---- END TICK ----
 
-    private void sync() {
-        float loopSlot = 1f / TARGET_FPS;
-        double endTime = timer.getLastLoopTime() + loopSlot;
-        while (timer.getTime() < endTime) {
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ie) {
-            }
+            // ---- RENDER ----
+            float partialTicks = (float) (((System.nanoTime() / 1_000_000_000.0f) - lastTickTime) / expectedTickTime);
+            render(partialTicks);
+            // ---- END RENDER ----
+
+            timeNow = System.nanoTime() / 1_000_000_000.0;
+            deltaTime = timeNow - timeBegin;
+            timeBegin = timeNow;
         }
     }
 
@@ -81,12 +84,12 @@ public class GameEngine implements Runnable {
         gameLogic.input(window, mouseInput);
     }
 
-    protected void update(float interval) {
-        gameLogic.update(interval, mouseInput);
+    protected void update() {
+        gameLogic.update(mouseInput);
     }
 
-    protected void render() {
-        gameLogic.render(window);
+    protected void render(float partialTicks) {
+        gameLogic.render(window, partialTicks);
         window.update();
     }
 

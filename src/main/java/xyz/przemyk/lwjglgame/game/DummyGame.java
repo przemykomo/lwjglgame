@@ -12,39 +12,17 @@ import static org.lwjgl.opengl.GL11.glViewport;
 public class DummyGame implements IGameLogic {
 
     private int direction = 0;
-
     private float color = 0.0f;
-
-    private final Renderer renderer;
-
-    private Mesh mesh;
-
-    private Camera camera;
+    private final Camera camera;
+    private BatchRenderer batchRenderer;
 
     public DummyGame() {
-        renderer = new Renderer();
         camera = new Camera();
     }
 
     @Override
     public void init(Window window) throws Exception {
-        renderer.init(window);
-        float[] vertices = new float[]{
-                -0.5f,  0.5f, -1.05f, 0.0f, 1.0f,
-                -0.5f, -0.5f, -1.05f, 0.0f, 0.0f,
-                0.5f, -0.5f, -1.05f, 1.0f, 0.0f,
-                0.5f,  0.5f, -1.05f, 1.0f, 1.0f
-        };
-//        float[] colours = new float[]{
-//                0.5f, 0.0f, 0.0f,
-//                0.0f, 0.5f, 0.0f,
-//                0.0f, 0.0f, 0.5f,
-//                0.0f, 0.5f, 0.5f,
-//        };
-        int[] indices = new int[]{
-                0, 1, 3, 3, 1, 2,
-        };
-        mesh = new Mesh(vertices, indices);
+        batchRenderer = new BatchRenderer(window);
     }
 
     @Override
@@ -89,7 +67,7 @@ public class DummyGame implements IGameLogic {
     }
 
     @Override
-    public void update(float interval, MouseInput mouseInput) {
+    public void update(MouseInput mouseInput) {
         color += direction * 0.01f;
         if (color > 1) {
             color = 1.0f;
@@ -101,19 +79,21 @@ public class DummyGame implements IGameLogic {
     }
 
     @Override
-    public void render(Window window) {
+    public void render(Window window, float partialTicks) {
         if (window.isResized()) {
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
         }
 
         window.setClearColor(color, color, color, 0.0f);
-        renderer.render(window, mesh, camera);
+
+        batchRenderer.reset();
+        batchRenderer.render(window, camera, partialTicks);
+        batchRenderer.flush();
     }
 
     @Override
     public void cleanup() {
-        renderer.cleanup();
-        mesh.cleanup();
+        batchRenderer.cleanup();
     }
 }

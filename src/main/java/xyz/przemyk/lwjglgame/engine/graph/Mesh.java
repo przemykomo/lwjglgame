@@ -15,7 +15,6 @@ public class Mesh {
 
     private final int vaoId;
     private final int vboId;
-//    private final int colourVboId;
     private final int indexVboId;
     private final int vertexCount;
 
@@ -23,10 +22,9 @@ public class Mesh {
         vertexCount = indices.length;
 
         FloatBuffer verticesBuffer = null;
-//        FloatBuffer colourBuffer = null;
         IntBuffer indicesBuffer = null;
-        try {
 
+        try {
             vaoId = glGenVertexArrays();
             glBindVertexArray(vaoId);
 
@@ -37,16 +35,13 @@ public class Mesh {
             glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
 
             glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 5 * Float.BYTES, 0);
-
-//            colourBuffer = MemoryUtil.memAllocFloat(colours.length);
-//            colourBuffer.put(colours).flip();
-//            colourVboId = glGenBuffers();
-//            glBindBuffer(GL_ARRAY_BUFFER, colourVboId);
-//            glBufferData(GL_ARRAY_BUFFER, colourBuffer, GL_STATIC_DRAW);
+            glVertexAttribPointer(0, 3, GL_FLOAT, false, 8 * Float.BYTES, 0);
 
             glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 2, GL_FLOAT, false, 5 * Float.BYTES, 3 * Float.BYTES);
+            glVertexAttribPointer(1, 2, GL_FLOAT, false, 8 * Float.BYTES, 3 * Float.BYTES);
+
+            glEnableVertexAttribArray(2);
+            glVertexAttribPointer(2, 3, GL_FLOAT, false, 8 * Float.BYTES, 5 * Float.BYTES);
 
             indicesBuffer = MemoryUtil.memAllocInt(indices.length);
             indicesBuffer.put(indices).flip();
@@ -97,7 +92,6 @@ public class Mesh {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(vboId);
-//        glDeleteBuffers(colourVboId);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glDeleteBuffers(indexVboId);
@@ -105,4 +99,5 @@ public class Mesh {
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
     }
+
 }

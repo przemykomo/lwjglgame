@@ -15,13 +15,11 @@ public class Window {
     private int height;
     private long windowHandle;
     private boolean resized;
-    private boolean vSync;
 
-    public Window(String title, int width, int height, boolean vSync) {
+    public Window(String title, int width, int height) {
         this.title = title;
         this.width = width;
         this.height = height;
-        this.vSync = vSync;
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -67,10 +65,8 @@ public class Window {
         // Make the OpenGL context current
         glfwMakeContextCurrent(windowHandle);
 
-        if (isvSync()) {
-            // Enable v-sync
-            glfwSwapInterval(1);
-        }
+        // Enable v-sync
+        glfwSwapInterval(1);
 
         // Make the window visible
         glfwShowWindow(windowHandle);
@@ -111,14 +107,6 @@ public class Window {
 
     public void setResized(boolean resized) {
         this.resized = resized;
-    }
-
-    public boolean isvSync() {
-        return vSync;
-    }
-
-    public void setvSync(boolean vSync) {
-        this.vSync = vSync;
     }
 
     public void update() {

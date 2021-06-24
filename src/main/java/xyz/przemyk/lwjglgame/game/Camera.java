@@ -4,6 +4,7 @@ import org.joml.Vector3f;
 
 public class Camera {
     public Vector3f position = new Vector3f();
+    public Vector3f previousPosition = new Vector3f();
     public float moveForward = 0;
     public float moveRight = 0;
     public float moveUp = 0;
@@ -12,6 +13,7 @@ public class Camera {
     public float angleYDegrees;
 
     public void update() {
+        previousPosition.set(position);
         moveRelative(moveRight * speed, moveForward * speed, moveUp * speed);
     }
 
