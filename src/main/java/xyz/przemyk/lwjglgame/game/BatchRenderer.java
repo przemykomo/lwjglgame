@@ -30,7 +30,7 @@ public class BatchRenderer {
     private final int[] indices = new int[maxBufferCount];
     private int indicesSize = 0;
     public final ShaderProgram shaderProgram;
-    public final Matrix4f modelViewMatrix;
+    public final Matrix4f viewMatrix;
     public final Matrix4f projectionMatrix;
     private final int vaoId;
     private final int vboId;
@@ -42,41 +42,43 @@ public class BatchRenderer {
         shaderProgram.createVertexShader(Utils.loadResource("vertex.vs"));
         shaderProgram.createFragmentShader(Utils.loadResource("fragment.fs"));
         shaderProgram.link();
-        shaderProgram.createUniform("modelViewMatrix");
+        shaderProgram.createUniform("viewMatrix");
         shaderProgram.createUniform("projectionMatrix");
-        modelViewMatrix = new Matrix4f();
+        viewMatrix = new Matrix4f();
         float aspectRatio = (float) window.getWidth() / window.getHeight();
         projectionMatrix = new Matrix4f();
         projectionMatrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
         shaderProgram.bind();
-        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+        shaderProgram.setUniform("viewMatrix", viewMatrix);
         shaderProgram.setUniform("projectionMatrix", projectionMatrix);
         shaderProgram.unbind();
 
-        vaoId = glGenVertexArrays();
-        vboId = glGenBuffers();
-        indexVboId = glGenBuffers();
+        {
+            vaoId = glGenVertexArrays();
+            vboId = glGenBuffers();
+            indexVboId = glGenBuffers();
 
-        glBindVertexArray(vaoId);
+            glBindVertexArray(vaoId);
 
-        glBindBuffer(GL_ARRAY_BUFFER, vboId);
-        glBufferData(GL_ARRAY_BUFFER, (long) vertices.length * Float.BYTES, GL_STREAM_DRAW);
+            glBindBuffer(GL_ARRAY_BUFFER, vboId);
+            glBufferData(GL_ARRAY_BUFFER, (long) vertices.length * Float.BYTES, GL_STREAM_DRAW);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVboId);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, (long) indices.length * Integer.BYTES, GL_STREAM_DRAW);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVboId);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, (long) indices.length * Integer.BYTES, GL_STREAM_DRAW);
 
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, floatPerVertex * Float.BYTES, 0);
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, false, floatPerVertex * Float.BYTES, 0);
 
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, floatPerVertex * Float.BYTES, 3 * Float.BYTES);
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 2, GL_FLOAT, false, floatPerVertex * Float.BYTES, 3 * Float.BYTES);
 
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 3, GL_FLOAT, false, floatPerVertex * Float.BYTES, 5 * Float.BYTES);
+            glEnableVertexAttribArray(2);
+            glVertexAttribPointer(2, 3, GL_FLOAT, false, floatPerVertex * Float.BYTES, 5 * Float.BYTES);
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            glBindVertexArray(0);
+        }
 
         int texture = glGenTextures(); //TODO: dynamic texture atlas
         glBindTexture(GL_TEXTURE_2D, texture);
@@ -151,8 +153,9 @@ public class BatchRenderer {
         glDeleteVertexArrays(vaoId);
     }
 
-    public void render(Window window, Camera camera, float partialTicks) {
+    public void preRender(Window window, Camera camera, float partialTicks) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
 
         if (window.isResized()) {
             glViewport(0, 0, window.getWidth(), window.getHeight());
@@ -166,24 +169,9 @@ public class BatchRenderer {
         camera.previousPosition.lerp(camera.position, partialTicks, lerpedCameraPos);
 
         shaderProgram.bind();
-        modelViewMatrix.identity().rotateXYZ((float) Math.toRadians(camera.angleXDegrees), (float) Math.toRadians(camera.angleYDegrees), 0)
+        viewMatrix.identity().rotateXYZ((float) Math.toRadians(camera.angleXDegrees), (float) Math.toRadians(camera.angleYDegrees), 0)
                 .translate(-lerpedCameraPos.x, -lerpedCameraPos.y, -lerpedCameraPos.z);
-        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+        shaderProgram.setUniform("viewMatrix", viewMatrix);
         shaderProgram.unbind();
-
-        float[] vertices = new float[] {
-                //vec3 position, vec2 texPos, vec3 vertexNormal
-                -0.5f,  0.5f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-                -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-                0.5f, -0.5f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-                0.5f,  0.5f, -1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f
-        };
-        int[] indices = new int[] {
-                0, 1, 3, 3, 1, 2
-        };
-
-        addModel(vertices, indices);
-
-        flush();
     }
 }

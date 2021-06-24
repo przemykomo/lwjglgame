@@ -1,5 +1,7 @@
 package xyz.przemyk.lwjglgame.engine;
 
+import xyz.przemyk.lwjglgame.game.DummyGame;
+
 public class GameEngine implements Runnable {
 
     public static final int TARGET_TPS = 30;
@@ -8,11 +10,11 @@ public class GameEngine implements Runnable {
 
     private final Timer timer;
 
-    private final IGameLogic gameLogic;
+    private final DummyGame gameLogic;
 
     private final MouseInput mouseInput;
 
-    public GameEngine(String windowTitle, int width, int height, IGameLogic gameLogic) {
+    public GameEngine(String windowTitle, int width, int height, DummyGame gameLogic) {
         this.window = new Window(windowTitle, width, height);
         this.gameLogic = gameLogic;
         this.timer = new Timer();
@@ -39,9 +41,6 @@ public class GameEngine implements Runnable {
     }
 
     protected void gameLoop() {
-        float elapsedTime;
-        float accumulator = 0f;
-        float interval = 1f / TARGET_TPS;
 
         double deltaTime = 1.0 / 60.0;
         double timeBegin = System.nanoTime() / 1_000_000_000.0;
@@ -50,15 +49,7 @@ public class GameEngine implements Runnable {
         final double expectedTickTime = 1.0 / TARGET_TPS;
 
         while (!window.windowShouldClose()) {
-//            elapsedTime = timer.getElapsedTime();
-//            accumulator += elapsedTime;
-
             input();
-
-//            while (accumulator >= interval) {
-//                update(interval);
-//                accumulator -= interval;
-//            }
 
             // ---- TICK ----
             double timeNow = System.nanoTime() / 1_000_000_000.0;
@@ -85,7 +76,7 @@ public class GameEngine implements Runnable {
     }
 
     protected void update() {
-        gameLogic.update(mouseInput);
+        gameLogic.tick();
     }
 
     protected void render(float partialTicks) {
