@@ -162,7 +162,7 @@ public class BatchRenderer {
             window.setResized(false);
 
             float aspectRatio = (float) window.getWidth() / window.getHeight();
-            projectionMatrix.identity().setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
+            projectionMatrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
             shaderProgram.setUniform("projectionMatrix", projectionMatrix);
         }
 

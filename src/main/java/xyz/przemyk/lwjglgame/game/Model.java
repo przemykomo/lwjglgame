@@ -7,13 +7,50 @@ import org.joml.Vector4f;
 
 public class Model {
 
-    public static final Model SQUARE = new Model(new Model.Vertex[] {
-        new Model.Vertex(new Vector3f(-0.5f,  0.5f, 0.0f), new Vector2f(0.0f, 1.0f), new Vector3f(0.0f, 0.0f, 1.0f)),
-                new Model.Vertex(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector2f(0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f)),
-                new Model.Vertex(new Vector3f(0.5f, -0.5f, 0.0f), new Vector2f(1.0f, 0.0f), new Vector3f(.0f, 0.0f, 1.0f)),
-                new Model.Vertex(new Vector3f(0.5f,  0.5f, 0.0f), new Vector2f(1.0f, 1.0f), new Vector3f(0.0f, 0.0f, 1.0f))
+    public static final Model CUBE = new Model(new Model.Vertex[] {
+            //front +z
+            new Model.Vertex(new Vector3f(-0.5f,  0.5f, 0.5f), new Vector2f(0.0f, 1.0f), new Vector3f(0.0f, 0.0f, 1.0f)),
+            new Model.Vertex(new Vector3f(-0.5f, -0.5f, 0.5f), new Vector2f(0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f)),
+            new Model.Vertex(new Vector3f(0.5f, -0.5f, 0.5f), new Vector2f(1.0f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f)),
+            new Model.Vertex(new Vector3f(0.5f,  0.5f, 0.5f), new Vector2f(1.0f, 1.0f), new Vector3f(0.0f, 0.0f, 1.0f)),
+
+            //right +x
+            new Model.Vertex(new Vector3f(0.5f,  0.5f, -0.5f), new Vector2f(0.0f, 1.0f), new Vector3f(1.0f, 0.0f, 0.0f)),
+            new Model.Vertex(new Vector3f(0.5f, -0.5f, -0.5f), new Vector2f(0.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f)),
+            new Model.Vertex(new Vector3f(0.5f, -0.5f, 0.5f), new Vector2f(1.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f)),
+            new Model.Vertex(new Vector3f(0.5f,  0.5f, 0.5f), new Vector2f(1.0f, 1.0f), new Vector3f(1.0f, 0.0f, 0.0f)),
+
+            //back -z
+            new Model.Vertex(new Vector3f(0.5f,  0.5f, -0.5f), new Vector2f(0.0f, 1.0f), new Vector3f(0.0f, 0.0f, -1.0f)),
+            new Model.Vertex(new Vector3f(0.5f, -0.5f, -0.5f), new Vector2f(0.0f, 0.0f), new Vector3f(0.0f, 0.0f, -1.0f)),
+            new Model.Vertex(new Vector3f(-0.5f, -0.5f, -0.5f), new Vector2f(1.0f, 0.0f), new Vector3f(0.0f, 0.0f, -1.0f)),
+            new Model.Vertex(new Vector3f(-0.5f,  0.5f, -0.5f), new Vector2f(1.0f, 1.0f), new Vector3f(0.0f, 0.0f, -1.0f)),
+
+            //left -x
+            new Model.Vertex(new Vector3f(-0.5f,  0.5f, -0.5f), new Vector2f(0.0f, 1.0f), new Vector3f(-1.0f, 0.0f, 0.0f)),
+            new Model.Vertex(new Vector3f(-0.5f, -0.5f, -0.5f), new Vector2f(0.0f, 0.0f), new Vector3f(-1.0f, 0.0f, 0.0f)),
+            new Model.Vertex(new Vector3f(-0.5f, -0.5f, 0.5f), new Vector2f(1.0f, 0.0f), new Vector3f(-1.0f, 0.0f, 0.0f)),
+            new Model.Vertex(new Vector3f(-0.5f,  0.5f, 0.5f), new Vector2f(1.0f, 1.0f), new Vector3f(-1.0f, 0.0f, 0.0f)),
+
+            //up +y
+            new Model.Vertex(new Vector3f(-0.5f,  0.5f, 0.5f), new Vector2f(0.0f, 1.0f), new Vector3f(0.0f, 1.0f, 0.0f)),
+            new Model.Vertex(new Vector3f(-0.5f, 0.5f, -0.5f), new Vector2f(0.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f)),
+            new Model.Vertex(new Vector3f(0.5f, 0.5f, -0.5f), new Vector2f(1.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f)),
+            new Model.Vertex(new Vector3f(0.5f,  0.5f, 0.5f), new Vector2f(1.0f, 1.0f), new Vector3f(0.0f, 1.0f, 0.0f)),
+
+            //down -y
+            new Model.Vertex(new Vector3f(-0.5f,  -0.5f, -0.5f), new Vector2f(0.0f, 1.0f), new Vector3f(0.0f, -1.0f, 0.0f)),
+            new Model.Vertex(new Vector3f(-0.5f, -0.5f, 0.5f), new Vector2f(0.0f, 0.0f), new Vector3f(0.0f, -1.0f, 0.0f)),
+            new Model.Vertex(new Vector3f(0.5f, -0.5f, 0.5f), new Vector2f(1.0f, 0.0f), new Vector3f(0.0f, -1.0f, 0.0f)),
+            new Model.Vertex(new Vector3f(0.5f,  -0.5f, -0.5f), new Vector2f(1.0f, 1.0f), new Vector3f(0.0f, -1.0f, 0.0f))
+
     }, new int[] {
-        0, 1, 3, 3, 1, 2
+        0, 1, 3, 3, 1, 2,
+        4, 5, 7, 7, 5, 6,
+        8, 9, 11, 11, 9, 10,
+        12, 13, 15, 15, 13, 14,
+        16, 17, 19, 19, 17, 18,
+        20, 21, 23, 23, 21, 22
     });
 
     public Vertex[] vertices;

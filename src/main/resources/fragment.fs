@@ -10,7 +10,7 @@ uniform sampler2D aTexture;
 
 void main() {
     vec3 lightPos = vec3(0.0, 0.0, 1.0);
-    float ambientStrength = 0.1;
+    float ambientStrength = 0.15;
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
     vec3 ambient = ambientStrength * lightColor;
 
@@ -19,7 +19,8 @@ void main() {
     vec3 norm = normalize(exVertexNormal);
     vec3 lightDirection = normalize(lightPos - exVertexPos);
 
-    float diff = max(dot(norm, lightDirection), 0.0);
+//     float diff = max(dot(norm, lightDirection), 0.0);
+    float diff = (dot(norm, lightDirection) + 1.0) / 2.0;
     vec3 diffuse = diff * lightColor;
 
     vec3 result = (ambient + diffuse) * objectColor;

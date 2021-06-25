@@ -36,7 +36,7 @@ public class GameObject {
                 (float) Math.toRadians(Math.fma(angleXDegrees - prevAngleXDegrees, partialTicks, prevAngleXDegrees)),
                 (float) Math.toRadians(Math.fma(angleYDegrees - prevAngleYDegrees, partialTicks, prevAngleYDegrees)),
                 0.0f);
-        Model.SQUARE.render(renderer, matrix4fStack);
+        Model.CUBE.render(renderer, matrix4fStack);
         matrix4fStack.popMatrix();
     }
 }
